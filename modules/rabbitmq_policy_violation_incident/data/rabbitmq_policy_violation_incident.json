@@ -1,0 +1,150 @@
+{
+  "name": "rabbitmq_policy_violation_incident",
+  "description": "RabbitMQ Policy Violation Incident refers to an event where the RabbitMQ messaging system has detected a policy violation. This might occur when the system identifies that a user or an application has performed an action that violates the predefined policies. The policies may include access control rules, message queue limits, and message expiration times. Such incidents require immediate attention to prevent any further policy breaches and ensure the proper functioning of the messaging system.",
+  "params": [
+    {
+      "name": "NEW_POLICY_DEFINITION",
+      "value": ""
+    },
+    {
+      "name": "POLICY_NAME",
+      "value": ""
+    },
+    {
+      "name": "VIRTUAL_HOST",
+      "value": ""
+    },
+    {
+      "name": "VHOST_NAME",
+      "value": ""
+    },
+    {
+      "name": "HOST_NAME",
+      "value": ""
+    },
+    {
+      "name": "K8S_CLUSTER_NAME",
+      "value": ""
+    },
+    {
+      "name": "NAMESPACE",
+      "value": ""
+    }
+  ],
+  "cells": [
+    {
+      "name": "cell_1",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## RabbitMQ Policy Violation Incident\nRabbitMQ Policy Violation Incident refers to an event where the RabbitMQ messaging system has detected a policy violation. This might occur when the system identifies that a user or an application has performed an action that violates the predefined policies. The policies may include access control rules, message queue limits, and message expiration times. Such incidents require immediate attention to prevent any further policy breaches and ensure the proper functioning of the messaging system."
+    },
+    {
+      "name": "cell_2",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Display the RabbitMQ server status and version"
+    },
+    {
+      "name": "cell_3",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `rabbitmqctl status`"
+    },
+    {
+      "name": "cell_4",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Display a list of all active channels on the RabbitMQ server"
+    },
+    {
+      "name": "cell_5",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `rabbitmqctl list_channels`"
+    },
+    {
+      "name": "cell_6",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Display a list of all active connections to the RabbitMQ server"
+    },
+    {
+      "name": "cell_7",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `rabbitmqctl list_connections`"
+    },
+    {
+      "name": "cell_8",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Display a list of all existing queues on the RabbitMQ server"
+    },
+    {
+      "name": "cell_9",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `rabbitmqctl list_queues`"
+    },
+    {
+      "name": "cell_10",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Display the RabbitMQ server logs to check for any policy violation errors"
+    },
+    {
+      "name": "cell_11",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `journalctl -u rabbitmq-server`"
+    },
+    {
+      "name": "cell_12",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Display the RabbitMQ server configuration file to check for any policy violations"
+    },
+    {
+      "name": "cell_13",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `cat /etc/rabbitmq/rabbitmq.conf`"
+    },
+    {
+      "name": "cell_14",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check if any specific policy is causing the violation"
+    },
+    {
+      "name": "cell_15",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `rabbitmqctl list_policies -p ${VHOST_NAME}`"
+    },
+    {
+      "name": "cell_16",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Check for any blocked connections due to policy violations"
+    },
+    {
+      "name": "cell_17",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "(host | host_name=$HOST_NAME) union (pod | k8s_cluster_name=$K8S_CLUSTER_NAME | namespace=$NAMESPACE) | `rabbitmqctl list_blocked_connections`"
+    },
+    {
+      "name": "cell_18",
+      "type": "MARKDOWN",
+      "enabled": true,
+      "content": "## Review the existing policies and update them if necessary to prevent future policy violations. This may involve revising the access control rules, message queue limits, and message expiration times."
+    },
+    {
+      "name": "cell_19",
+      "type": "OP_LANG",
+      "enabled": true,
+      "content": "host | host_name=$HOST_NAME | invoke_update_rabbitmq_policy($NEW_POLICY_DEFINITION, $POLICY_NAME, $VIRTUAL_HOST)"
+    }
+  ]
+}
